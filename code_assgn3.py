@@ -1,10 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 import sklearn.cluster as cluster
 import sklearn.metrics as skmet
 from scipy.optimize import curve_fit
+
 
 def read_data(file):
     """
@@ -28,14 +28,13 @@ def read_data(file):
     list_col = ['Country Code', 'Indicator Name', 'Indicator Code']
     var = var.drop(list_col, axis=1)
     data_year = var.set_index("Country Name")
-    
-    
+
     data_country = data_year.transpose()
     data_year.index.name = None
     data_country.index.name = None
     return data_year.fillna(0), data_country.fillna(0)
 
-    #return data_year.fillna(0)
+    # return data_year.fillna(0)
 
 
 def filter_dataframes(data_frame):
@@ -113,7 +112,7 @@ def heat_corr(df, size=5):
     plt.show()
 
 
-def func(x,a,b,c):
+def func(x, a, b, c):
     return a * np.exp(-(x-b)**2 / c)
 
 
@@ -123,32 +122,35 @@ def err_ranges(x, func, param, sigma):
     sigmas for single value or array x. Functions values are calculated for 
     all combinations of +/- sigma and the minimum and maximum is determined.
     Can be used for all number of parameters and sigmas >=1.
-    
+
     This routine can be used in assignment programs.
     """
     import itertools as iter
-    
+
     # initiate arrays for lower and upper limits
     lower = func(x, *param)
     upper = lower
-    
+
     uplow = []   # list to hold upper and lower limits for parameters
-    for p,s in zip(param, sigma):
+    for p, s in zip(param, sigma):
         pmin = p - s
         pmax = p + s
         uplow.append((pmin, pmax))
-        
+
     pmix = list(iter.product(*uplow))
-    
+
     for p in pmix:
         y = func(x, *p)
         lower = np.minimum(lower, y)
         upper = np.maximum(upper, y)
-        
+
     return lower, upper
 
+
 '''adding an exponential function'''
-def expoFunc(x,a,b):
+
+
+def expoFunc(x, a, b):
     return a**(x+b)
 
 
@@ -159,9 +161,9 @@ countries = ["United States", "France", "China", "India", "Germany",
 # Range of years
 years = range(2000, 2015, 2)
 
-arable_land_df,arable_land_df_trnsps = read_data('arable_land.xlsx')
-gdp_df,gdp_df_trnsps = read_data('GDP_filtered.xlsx')
-population_df,population_df_trnsps = read_data('population.xlsx')
+arable_land_df, arable_land_df_trnsps = read_data('arable_land.xlsx')
+gdp_df, gdp_df_trnsps = read_data('GDP_filtered.xlsx')
+population_df, population_df_trnsps = read_data('population.xlsx')
 
 arable_land_year = filter_year_dataframe(arable_land_df)
 gdp_df_year = filter_year_dataframe(gdp_df)
@@ -240,7 +242,7 @@ plt.title('GDP', size=16)
 # Show the graph
 plt.show()
 
-gdp_df_trnsps['years']=gdp_df_trnsps.index.values
+gdp_df_trnsps['years'] = gdp_df_trnsps.index.values
 yearss = gdp_df_trnsps['years']
 gdp_per_capita = gdp_df_trnsps['China']
 
@@ -250,6 +252,7 @@ gdp_per_capita = gdp_df_trnsps['China']
 # define fitting function
 def gdp_fit(x, a, b, c):
     return a*x**2 + b*x + c
+
 
 # perform curve fit
 params, cov = curve_fit(gdp_fit, yearss, gdp_per_capita)
